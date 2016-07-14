@@ -156,10 +156,10 @@ func (s *Stream) listen(response http.Response) {
 
 	reader := bufio.NewReader(response.Body)
 
-	line := make([]byte, 0, 1024)
-	nextLine := func() (newLine []byte, readError error) {
+	buff := make([]byte, 0, 1024)
+	nextLine := func() (line []byte, readError error) {
 		var linePart []byte
-		newLine = line[:0]
+		line = buff[:0]
 		isPrefix := true
 		for isPrefix {
 			linePart, isPrefix, readError = reader.ReadLine()
