@@ -173,7 +173,12 @@ func (s *Stream) listen(response http.Response) {
 	}
 
 	for s.run {
-		line, _ := nextLine()
+		line, err := nextLine()
+		if err != nil {
+			s.api.Log.Error("Error while reading streaming response")
+			return
+		}
+
 		if len(line) == 0 {
 			s.api.Log.Debug("Empty bytes... Moving along")
 		} else {
