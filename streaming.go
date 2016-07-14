@@ -154,20 +154,32 @@ func (s *Stream) listen(response http.Response) {
 	s.api.Log.Notice("Listenning to twitter socket")
 	defer s.api.Log.Notice("twitter socket closed, leaving loop")
 
-	scanner := bufio.NewScanner(response.Body)
+	reader := bufio.NewReader(response.Body)
 
-	for scanner.Scan() && s.run {
-		j := scanner.Bytes()
-		if len(j) == 0 {
+	line := make([]byte, 0, 1024)
+	nextLine := func() (newLine []byte, readError error) {
+		var linePart []byte
+		newLine = line[:0]
+		isPrefix := true
+		for isPrefix {
+			linePart, isPrefix, readError = reader.ReadLine()
+			line = append(line, linePart...)
+			if readError != nil {
+				return
+			}
+		}
+
+		return line, nil
+	}
+
+	for s.run {
+		line, _ := nextLine()
+		if len(line) == 0 {
 			s.api.Log.Debug("Empty bytes... Moving along")
 		} else {
-			s.api.Log.Debugf("Trying to decode '%s'\n", string(j))
-			s.C <- jsonToKnownType(j)
+			s.api.Log.Debugf("Trying to decode '%s'\n", string(line))
+			s.C <- jsonToKnownType(line)
 		}
-	}
-	if scanner.Err() != nil {
-		s.api.Log.Noticef("scanner finished with: %v", scanner.Err())
-		s.api.Log.Noticef("error bytes: %s\n", string(scanner.Bytes()))
 	}
 }
 
