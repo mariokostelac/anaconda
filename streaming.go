@@ -161,6 +161,7 @@ func (s *Stream) listen(response http.Response) {
 		if len(j) == 0 {
 			s.api.Log.Debug("Empty bytes... Moving along")
 		} else {
+			s.api.Log.Debugf("Trying to decode '%s'\n", string(j))
 			s.C <- jsonToKnownType(j)
 		}
 
