@@ -168,8 +168,7 @@ func (s *Stream) listen(response http.Response) {
 				return
 			}
 		}
-
-		return line, nil
+		return
 	}
 
 	for s.run {
@@ -179,6 +178,7 @@ func (s *Stream) listen(response http.Response) {
 			return
 		}
 
+		s.api.Log.Debugf("Line length: %d", len(line))
 		if len(line) == 0 {
 			s.api.Log.Debug("Empty bytes... Moving along")
 		} else {
