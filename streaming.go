@@ -174,7 +174,7 @@ func (s *Stream) listen(response http.Response) {
 	for s.run {
 		line, err := nextLine()
 		if err != nil {
-			s.api.Log.Error("Error while reading streaming response")
+			s.api.Log.Errorf("Error while reading streaming response: %v", err)
 			return
 		}
 
