@@ -164,8 +164,8 @@ func (s *Stream) listen(response http.Response) {
 			s.api.Log.Debugf("Trying to decode '%s'\n", string(j))
 			s.C <- jsonToKnownType(j)
 		}
+
 	}
-	s.api.Log.Noticef("scanner finished with: %v", scanner.Err())
 }
 
 func jsonToKnownType(j []byte) interface{} {
