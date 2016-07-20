@@ -154,7 +154,9 @@ func (s *Stream) listen(response http.Response) {
 	s.api.Log.Notice("Listenning to twitter socket")
 	defer s.api.Log.Notice("twitter socket closed, leaving loop")
 
+	var buffer []byte
 	scanner := bufio.NewScanner(response.Body)
+	scanner.Buffer(buffer, 1*1024*1024)
 
 	for scanner.Scan() && s.run {
 		j := scanner.Bytes()
