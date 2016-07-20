@@ -165,10 +165,7 @@ func (s *Stream) listen(response http.Response) {
 			s.C <- jsonToKnownType(j)
 		}
 	}
-	if scanner.Err() != nil {
-		s.api.Log.Noticef("scanner finished with: %v", scanner.Err())
-		s.api.Log.Noticef("error bytes: %s\n", string(scanner.Bytes()))
-	}
+	s.api.Log.Noticef("scanner finished with: %v", scanner.Err())
 }
 
 func jsonToKnownType(j []byte) interface{} {
